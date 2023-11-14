@@ -1,0 +1,26 @@
+syntax = "proto3";
+package pb;
+option go_package = "src/internal/infra/grpc/pb";
+
+
+message GetFotosRequest {}
+
+message Redes {
+    repeated string red = 1;
+}
+
+message FotoResponse {
+    int32   id      = 1;
+    string  fotoUrl = 2;
+    string  nome    = 3; 
+    string  partido = 4;
+    string  uf      = 5;
+    string  url     = 6;
+    Redes   redes   = 7;
+    string  fotoUrl2 = 8;
+}
+
+service FotosService {
+    rpc GetFotos(GetFotosRequest) returns (stream FotoResponse) {}
+}
+

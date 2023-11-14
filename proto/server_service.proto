@@ -1,0 +1,12 @@
+syntax = "proto3";
+package pb;
+option go_package = "src/internal/infra/grpc/pb";
+
+
+message ShutdownRequest {}
+
+message ShutdownResponse {}
+
+service ServerService {
+    rpc Shutdown(ShutdownRequest) returns (ShutdownResponse) {}
+}

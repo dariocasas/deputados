@@ -1,0 +1,3 @@
+
+Building Windows application...                                     9,1s
+√  Built build\windows\runner\Release\deputados.exe (0.1MB).
