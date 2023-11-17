@@ -40,6 +40,19 @@ mixin _CreateDbStoreMixin on _CreateDbStore {
   int get totalMilliseconds => _totalMillisecondsRx.value;
 
   ///
+  /// GENERATED concurrency(int)
+  ///
+
+  late final _concurrencyRx = RxNotifier<int>(super.concurrency);
+  RxValueListenable<int> get concurrencyListenable => _concurrencyRx;
+
+  @override
+  set concurrency(int _concurrencyValue) =>
+      _concurrencyRx.value = _concurrencyValue;
+  @override
+  int get concurrency => _concurrencyRx.value;
+
+  ///
   /// GENERATED totalPartialTime(PartialTime?)
   ///
 

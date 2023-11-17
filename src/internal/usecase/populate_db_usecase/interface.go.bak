@@ -11,9 +11,8 @@ type PopulateDbUseCaseInterface interface {
 }
 
 type PopulateDbInputDTO = struct {
-	Concurrency int
-	TimeOut     int
-	OnNewItem   OnNewItem
+	TimeOut   int
+	OnNewItem OnNewItem
 }
 
 type PopulateDbOutputDTO = struct {

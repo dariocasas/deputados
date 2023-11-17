@@ -5,13 +5,18 @@ Sistema constituído de um servidor local golang, conectado a mongoDB Atlas e, v
 O que faz?
 
 - Consulta API da Câmara dos Deputados colhendo os ids de cada deputado e cria um índice.
-- Cria o DB, iterando cada id e realizando duas tarefas:
+- Cria o DB, iterando cada id, agrupando segundo parâmetro quantidade de rotinas concorrentes e, concorrentemente, por cada id realiza duas tarefas:
   - consulta API recolhendo as informações de cada deputado.
   - descarrega pagina web do deputado do site da Câmara dos Deputados, parsea o HTML e recolhe mais dados.
 - Mostra a lista de deputados, com foto, link para a página e redes sociais.
 
+## Vídeo
 
-[< Ver vídeo >](https://www.youtube.com/watch?v=SGFibhnTAiw)
+- [Vídeo YouTube](https://www.youtube.com/watch?v=F4aH6iiBiTY)
+
+## Referências
+
+- [Pipelines by Sameer Ajmani](https://go.dev/blog/pipelines)
 
 ## Requisitos
 
@@ -42,8 +47,12 @@ DEPS_GRPC_PORT=50051
 DEPS_GRPC_ADDR="localhost"   
 ~~~
 
+### Ferramentas
+
+- build.bat
+- run.bat
+
 ## Todo
 
 - GRPC Health Checking
-- Concorrência ao criar DB
 - Web Client. Proxy? gRPC-Web?

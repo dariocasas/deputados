@@ -49,20 +49,20 @@ class DatabaseServiceImpl implements DatabaseService {
       debugPrint(dbStatusStore.dbStatus.route());
       Modular.to.navigate(dbStatusStore.dbStatus.route());
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+      // switch (dbStatusStore.dbStatus) {
+      //   case DbStatus.indexCreated:
+      //     debugPrint('/idxok/');
+      //     Modular.to.navigate('/idxok/');
+      //     break;
+      //   case DbStatus.dbCreated:
+      //     debugPrint('/dbok/');
+      //     Modular.to.navigate('/dbok/');
+      //     break;
+      //   default:
+      //     debugPrint('/nodb/');
+      //     Modular.to.navigate('/nodb/');
+      // }
+      //
       return DbStatus.fromInt(response.status.value);
     } on GrpcError catch (e) {
       Modular.to.navigate('/error/${e.message}');
@@ -75,11 +75,10 @@ class DatabaseServiceImpl implements DatabaseService {
   }
 
   @override
-  Future<bool> createDB({int concurrency = 5, int timeout = 15000}) {
+  Future<bool> createDB({int timeout = 15000}) {
     dbStatusStore.indexCount = 0;
     dbStatusStore.loading = false;
     createDbStore.totalMilliseconds = 0;
-    createDbStore.concurrency = concurrency;
     createDbStore.deputados.clear();
     createDbStore.totalPartialTime = createdbstore.PartialTime(
       dbread: 0,
@@ -93,7 +92,6 @@ class DatabaseServiceImpl implements DatabaseService {
 
     final dbServiceClient = DbServiceClient(channel);
     final responsStream = dbServiceClient.populateDb(PopulateDbRequest(
-      concurrency: concurrency,
       timeout: timeout,
     ));
 

@@ -32,6 +32,7 @@ class _CreateDBBoardState extends State<CreateDBBoard> {
 
   @override
   Widget build(BuildContext context) {
+    final concurrency = context.select(() => createDbStore.concurrency);
     final deputados =
         context.select(() => createDbStore.deputados.reversed.toList());
     final dbStatusItems = -context.select(() => dbStatusStore.indexCount);
@@ -50,7 +51,7 @@ class _CreateDBBoardState extends State<CreateDBBoard> {
           // drawer: const MainDrawer(),
           appBar: CustomAppBar(
               title:
-                  "Criando db: $dbStatusItems deputados  | tempo: $seconds seg  | média: $sAvg deputados/segundo"),
+                  "Criando db: $dbStatusItems deputados  | tempo: $seconds seg  | média: $sAvg deputados/segundo | concorrência: $concurrency"),
           body: Column(
             children: [
               Expanded(

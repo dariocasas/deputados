@@ -98,13 +98,15 @@ final $typed_data.Uint8List populateIndexResponseDescriptor = $convert.base64Dec
 const PopulateDbRequest$json = {
   '1': 'PopulateDbRequest',
   '2': [
-    {'1': 'timeout', '3': 1, '4': 1, '5': 5, '10': 'timeout'},
+    {'1': 'concurrency', '3': 1, '4': 1, '5': 5, '10': 'concurrency'},
+    {'1': 'timeout', '3': 2, '4': 1, '5': 5, '10': 'timeout'},
   ],
 };
 
 /// Descriptor for `PopulateDbRequest`. Decode as a `google.protobuf.DescriptorProto`.
 final $typed_data.Uint8List populateDbRequestDescriptor = $convert.base64Decode(
-    'ChFQb3B1bGF0ZURiUmVxdWVzdBIYCgd0aW1lb3V0GAEgASgFUgd0aW1lb3V0');
+    'ChFQb3B1bGF0ZURiUmVxdWVzdBIgCgtjb25jdXJyZW5jeRgBIAEoBVILY29uY3VycmVuY3kSGA'
+    'oHdGltZW91dBgCIAEoBVIHdGltZW91dA==');
 
 @$core.Deprecated('Use partialTimeDescriptor instead')
 const PartialTime$json = {

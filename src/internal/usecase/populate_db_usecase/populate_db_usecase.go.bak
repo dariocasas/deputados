@@ -13,7 +13,6 @@ import (
 	"github.com/dariocasas/deputados3/src/internal/usecase/scan_page"
 	"github.com/dariocasas/deputados3/src/pkg/elapsed_time"
 	"github.com/dariocasas/deputados3/src/pkg/http_client"
-	"github.com/dariocasas/deputados3/src/pkg/runner"
 
 	"github.com/dariocasas/deputados3/src/internal/infra/api/api_deputado"
 	"github.com/dariocasas/deputados3/src/internal/infra/mongodb/repo_deputado"
@@ -64,7 +63,7 @@ type resultDeputado = struct {
 
 func (p PopulateDbUseCase) Execute(input PopulateDbInputDTO) *PopulateDbOutputDTO {
 
-	log.Printf("PopulateDbUseCase.Execute() Concurrency:%d", input.Concurrency)
+	log.Printf("PopulateDbUseCase.Execute")
 
 	itemsProcessed := 0
 
@@ -90,199 +89,158 @@ func (p PopulateDbUseCase) Execute(input PopulateDbInputDTO) *PopulateDbOutputDT
 		}
 	}
 
-	populateOne := func(idx *deputado_index.DeputadoId) *PopulateDbOutputDTO {
+	for _, idx := range deputadoIndexRepositoryOutputDTO.DeputadosIds {
 
-		log.Printf("PopulateDbUseCase.Execute id:%d", idx.Id)
-		elapsedTime.Reset()
+		func(idx *deputado_index.DeputadoId) *PopulateDbOutputDTO {
 
-		var errResult error
-		var nameResult string
-		var resultChan = make(chan *resultDeputado, 2)
+			log.Printf("PopulateDbUseCase.Execute id:%d", idx.Id)
+			elapsedTime.Reset()
 
-		defer func() {
-			input.OnNewItem(
-				idx.Id,
-				nameResult,
-				errResult,
-				elapsedTime,
-				partialTime,
-			)
-		}()
+			var errResult error
+			var nameResult string
+			var resultChan = make(chan *resultDeputado, 2)
 
-		// ler deputado do banco de dados
+			defer func() {
+				input.OnNewItem(
+					idx.Id,
+					nameResult,
+					errResult,
+					elapsedTime,
+					partialTime,
+				)
+			}()
 
-		deputadoRepositoryOutputDTO := p.deputadoRepository.Find(idx.Id)
+			// ler deputado do banco de dados
 
-		deputado1 := deputadoRepositoryOutputDTO.Deputado
-		deputadoExists := deputadoRepositoryOutputDTO.Error == nil
-		if !deputadoExists {
-			deputado1 = deputado.NewDeputado(idx.Id)
-		}
-		partialTime.DbRead = deputadoRepositoryOutputDTO.Duration
+			deputadoRepositoryOutputDTO := p.deputadoRepository.Find(idx.Id)
 
-		// ler deputado pela API
-
-		go func(resultChan chan *resultDeputado, partialTime PartialTime, id int) <-chan *resultDeputado {
-			deputafromapi := p.getDeputaFromApi.Execute(
-				get_deputado_from_api_usecase.NewGetDeputadoFromApiIntputDTO(
-					id, input.TimeOut,
-				),
-			)
-			partialTime.GetApi = deputafromapi.Duration
-			resultChan <- &resultDeputado{
-				Deputado:    deputafromapi.Deputado,
-				Duration:    deputafromapi.Duration,
-				Error:       deputafromapi.Error,
-				PartialTime: partialTime,
-				isApiValue:  true,
+			deputado1 := deputadoRepositoryOutputDTO.Deputado
+			deputadoExists := deputadoRepositoryOutputDTO.Error == nil
+			if !deputadoExists {
+				deputado1 = deputado.NewDeputado(idx.Id)
 			}
-			return resultChan
-		}(resultChan, partialTime, deputado1.Id)
+			partialTime.DbRead = deputadoRepositoryOutputDTO.Duration
 
-		go func(resultChan chan *resultDeputado, partialTime PartialTime, id int) <-chan *resultDeputado {
+			// ler deputado pela API
 
-			// baixar html pagina deputado
-
-			url := fmt.Sprintf("%s/%d", p.config.DeputadosPagesUrlBase, id)
-			httpClientOutputDTO := p.httpClient.RequestPageWithRetry(
-				&http_client.HttpClientWithRetryInputDTO{
-					Url:     url,
-					Timeout: input.TimeOut,
-					MinLen:  10000,
-					Retry:   3,
-				},
-			)
-			partialTime.GetPage = httpClientOutputDTO.Duration
-			if httpClientOutputDTO.Error != nil {
-
+			go func(resultChan chan *resultDeputado, partialTime PartialTime, id int) <-chan *resultDeputado {
+				deputafromapi := p.getDeputaFromApi.Execute(
+					get_deputado_from_api_usecase.NewGetDeputadoFromApiIntputDTO(
+						id, input.TimeOut,
+					),
+				)
+				partialTime.GetApi = deputafromapi.Duration
 				resultChan <- &resultDeputado{
-					Deputado:    deputado.NewDeputado(id),
-					Duration:    httpClientOutputDTO.Duration,
-					Error:       httpClientOutputDTO.Error,
+					Deputado:    deputafromapi.Deputado,
+					Duration:    deputafromapi.Duration,
+					Error:       deputafromapi.Error,
 					PartialTime: partialTime,
+					isApiValue:  true,
 				}
 				return resultChan
-			}
+			}(resultChan, partialTime, deputado1.Id)
 
-			// escanear dados da pagina e atualizar deputado
+			go func(resultChan chan *resultDeputado, partialTime PartialTime, id int) <-chan *resultDeputado {
 
-			scanPageDeputadoOutputDTO := p.scanPageDeputado.Parse(
-				scan_page.NewScanPageDeputadoInputDTO(
-					id,
-					string(*httpClientOutputDTO.Result),
-				),
-			)
-			partialTime.ScanPage = scanPageDeputadoOutputDTO.Duration
-			if scanPageDeputadoOutputDTO.Error != nil {
+				// baixar html pagina deputado
+
+				url := fmt.Sprintf("%s/%d", p.config.DeputadosPagesUrlBase, id)
+				httpClientOutputDTO := p.httpClient.RequestPageWithRetry(
+					&http_client.HttpClientWithRetryInputDTO{
+						Url:     url,
+						Timeout: input.TimeOut,
+						MinLen:  10000,
+						Retry:   3,
+					},
+				)
+				partialTime.GetPage = httpClientOutputDTO.Duration
+				if httpClientOutputDTO.Error != nil {
+
+					resultChan <- &resultDeputado{
+						Deputado:    deputado.NewDeputado(id),
+						Duration:    httpClientOutputDTO.Duration,
+						Error:       httpClientOutputDTO.Error,
+						PartialTime: partialTime,
+					}
+					return resultChan
+				}
+
+				// escanear dados da pagina e atualizar deputado
+
+				scanPageDeputadoOutputDTO := p.scanPageDeputado.Parse(
+					scan_page.NewScanPageDeputadoInputDTO(
+						id,
+						string(*httpClientOutputDTO.Result),
+					),
+				)
+				partialTime.ScanPage = scanPageDeputadoOutputDTO.Duration
+				if scanPageDeputadoOutputDTO.Error != nil {
+
+					resultChan <- &resultDeputado{
+						Deputado:    deputado.NewDeputado(id),
+						Duration:    scanPageDeputadoOutputDTO.Duration,
+						Error:       scanPageDeputadoOutputDTO.Error,
+						PartialTime: partialTime,
+					}
+					return resultChan
+				}
+
+				scanPageDeputadoOutputDTO.Deputado.Url = url
 
 				resultChan <- &resultDeputado{
-					Deputado:    deputado.NewDeputado(id),
+					Deputado:    scanPageDeputadoOutputDTO.Deputado,
 					Duration:    scanPageDeputadoOutputDTO.Duration,
 					Error:       scanPageDeputadoOutputDTO.Error,
 					PartialTime: partialTime,
 				}
 				return resultChan
-			}
+			}(resultChan, partialTime, deputado1.Id)
 
-			scanPageDeputadoOutputDTO.Deputado.Url = url
+			res := copyValues(deputado1, <-resultChan, <-resultChan)
+			partialTime = res.PartialTime
+			deputado1 = res.Deputado
 
-			resultChan <- &resultDeputado{
-				Deputado:    scanPageDeputadoOutputDTO.Deputado,
-				Duration:    scanPageDeputadoOutputDTO.Duration,
-				Error:       scanPageDeputadoOutputDTO.Error,
-				PartialTime: partialTime,
-			}
-			return resultChan
-		}(resultChan, partialTime, deputado1.Id)
+			// inserir no db
 
-		res := copyValues(deputado1, <-resultChan, <-resultChan)
-		partialTime = res.PartialTime
-		deputado1 = res.Deputado
+			databaseDeputadoInputDTO := repo_deputado.NewDatabaseDeputadoInputDTO(deputado1)
 
-		// inserir no db
-
-		databaseDeputadoInputDTO := repo_deputado.NewDatabaseDeputadoInputDTO(deputado1)
-
-		if deputadoExists {
-			databaseDeputadoOutputDTO := p.deputadoRepository.Update(databaseDeputadoInputDTO)
-			if databaseDeputadoOutputDTO.Error != nil {
-				errResult = databaseDeputadoOutputDTO.Error
-				return &PopulateDbOutputDTO{
-					Duration: elapsedTime.Elapsed(),
-					Error:    errResult,
+			if deputadoExists {
+				databaseDeputadoOutputDTO := p.deputadoRepository.Update(databaseDeputadoInputDTO)
+				if databaseDeputadoOutputDTO.Error != nil {
+					errResult = databaseDeputadoOutputDTO.Error
+					return &PopulateDbOutputDTO{
+						Duration: elapsedTime.Elapsed(),
+						Error:    errResult,
+					}
 				}
-			}
-			partialTime.DbWrite = databaseDeputadoOutputDTO.Duration
-		} else {
-			databaseDeputadoOutputDTO := p.deputadoRepository.Insert(databaseDeputadoInputDTO)
-			if databaseDeputadoOutputDTO.Error != nil {
-				errResult = databaseDeputadoOutputDTO.Error
-				return &PopulateDbOutputDTO{
-					Duration: elapsedTime.Elapsed(),
-					Error:    errResult,
+				partialTime.DbWrite = databaseDeputadoOutputDTO.Duration
+			} else {
+				databaseDeputadoOutputDTO := p.deputadoRepository.Insert(databaseDeputadoInputDTO)
+				if databaseDeputadoOutputDTO.Error != nil {
+					errResult = databaseDeputadoOutputDTO.Error
+					return &PopulateDbOutputDTO{
+						Duration: elapsedTime.Elapsed(),
+						Error:    errResult,
+					}
 				}
+				partialTime.DbWrite = databaseDeputadoOutputDTO.Duration
 			}
-			partialTime.DbWrite = databaseDeputadoOutputDTO.Duration
-		}
 
-		return &PopulateDbOutputDTO{
-			Duration: elapsedTime.Elapsed(),
-			Error:    nil,
-		}
-	}
+			return &PopulateDbOutputDTO{
+				Duration: elapsedTime.Elapsed(),
+				Error:    nil,
+			}
 
-	f := func(in runner.InputChanType) runner.OuputChanType {
-		return runner.OuputChanType{
-			Value: populateOne(&deputado_index.DeputadoId{
-				Id: in.Value.(*deputado_index.DeputadoId).Id},
-			),
-		}
-	}
+		}(idx)
 
-	const concurrency = 5
-
-	runner := runner.NewRunner(concurrency)
-	// Stage 1 (source)
-	// generates input data
-	sourceChan := generateSourceChannel(runner.GetDone(), concurrency, deputadoIndexRepositoryOutputDTO.DeputadosIds)
-
-	sinkChan := runner.Run(sourceChan, f)
-
-	// Stage 5 (sink)
-	for n := range sinkChan {
-		log.Printf("Duration ms %d ", n.Value.(*PopulateDbOutputDTO).Duration.Milliseconds())
 		itemsProcessed++
 	}
-	log.Printf("PopulateDbUseCase.Execute itemsProcessed:%d", itemsProcessed)
 
 	return &PopulateDbOutputDTO{
 		Duration:       elapsedTime.Elapsed(),
 		Error:          nil,
 		ItemsProcessed: itemsProcessed,
 	}
-}
-
-func generateSourceChannel(done chan struct{}, concurrency int, nums deputado_index.DeputadoIndex) <-chan runner.InputChanType {
-
-	out := make(chan runner.InputChanType, concurrency)
-
-	go func() {
-		defer func() {
-			close(out)
-		}()
-
-		for _, n := range nums {
-			select {
-			case out <- runner.InputChanType{
-				Value: n,
-			}:
-			case <-done:
-				return
-			}
-		}
-
-	}()
-	return out
 }
 
 func copyValues(deputado1 *deputado.Deputado, res1 *resultDeputado, res2 *resultDeputado) resultDeputado {

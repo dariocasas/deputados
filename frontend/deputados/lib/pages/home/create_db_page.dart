@@ -19,6 +19,7 @@ class CreateDbPage extends StatefulWidget {
 class _CreateDbPageState extends State<CreateDbPage> {
   final dbStatusStore = Modular.get<DbStatusStore>();
   final grpcService = Modular.get<DatabaseService>();
+  double _currentSliderValue = 5;
   final TextEditingController _timeOutController =
       TextEditingController(text: "5000");
 
@@ -59,6 +60,29 @@ class _CreateDbPageState extends State<CreateDbPage> {
                   children: [
                     const Padding(
                       padding: EdgeInsets.only(right: 16),
+                      child: Text('concorrência:'),
+                    ),
+                    Text(_currentSliderValue.round().toString()),
+                    Slider(
+                      value: _currentSliderValue,
+                      max: 64,
+                      min: 1,
+                      divisions: 64,
+                      label: _currentSliderValue.round().toString(),
+                      onChanged: (double value) {
+                        setState(() {
+                          _currentSliderValue = value;
+                        });
+                      },
+                    ),
+                  ],
+                ),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Padding(
+                      padding: EdgeInsets.only(right: 16),
                       child: Text('timeout (milisegundos):'),
                     ),
                     SizedBox(
@@ -84,6 +108,7 @@ class _CreateDbPageState extends State<CreateDbPage> {
                         var value = int.tryParse(_timeOutController.text);
                         if (value != null) {
                           grpcService.createDB(
+                            concurrency: _currentSliderValue.round(),
                             timeout: value,
                           );
                           showDialog(

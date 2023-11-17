@@ -28,8 +28,7 @@ message PopulateIndexResponse{
 }
 
 message PopulateDbRequest {
-    int32 concurrency = 1;
-    int32 timeout = 2;
+    int32 timeout = 1;
 }
 
 message PartialTime {
