@@ -36,7 +36,5 @@ abstract class _CreateDbStore {
   @RxValue()
   int totalMilliseconds = 0;
   @RxValue()
-  int concurrency = 0;
-  @RxValue()
   PartialTime? totalPartialTime = null;
 }

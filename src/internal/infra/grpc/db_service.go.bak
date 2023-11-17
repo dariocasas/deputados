@@ -130,7 +130,6 @@ func (s *DbService) PopulateDb(in *pb.PopulateDbRequest, out pb.DbService_Popula
 
 		populate_db_usecase.PopulateDbInputDTO{
 			TimeOut: int(in.Timeout),
-			Concurrency: int(in.Concurrency),
 			OnNewItem: func(
 				id int,
 				name string,

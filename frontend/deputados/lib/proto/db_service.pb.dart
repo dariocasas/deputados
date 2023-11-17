@@ -279,9 +279,13 @@ class PopulateIndexResponse extends $pb.GeneratedMessage {
 
 class PopulateDbRequest extends $pb.GeneratedMessage {
   factory PopulateDbRequest({
+    $core.int? concurrency,
     $core.int? timeout,
   }) {
     final $result = create();
+    if (concurrency != null) {
+      $result.concurrency = concurrency;
+    }
     if (timeout != null) {
       $result.timeout = timeout;
     }
@@ -292,7 +296,8 @@ class PopulateDbRequest extends $pb.GeneratedMessage {
   factory PopulateDbRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
 
   static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'PopulateDbRequest', package: const $pb.PackageName(_omitMessageNames ? '' : 'pb'), createEmptyInstance: create)
-    ..a<$core.int>(1, _omitFieldNames ? '' : 'timeout', $pb.PbFieldType.O3)
+    ..a<$core.int>(1, _omitFieldNames ? '' : 'concurrency', $pb.PbFieldType.O3)
+    ..a<$core.int>(2, _omitFieldNames ? '' : 'timeout', $pb.PbFieldType.O3)
     ..hasRequiredFields = false
   ;
 
@@ -318,13 +323,22 @@ class PopulateDbRequest extends $pb.GeneratedMessage {
   static PopulateDbRequest? _defaultInstance;
 
   @$pb.TagNumber(1)
-  $core.int get timeout => $_getIZ(0);
+  $core.int get concurrency => $_getIZ(0);
   @$pb.TagNumber(1)
-  set timeout($core.int v) { $_setSignedInt32(0, v); }
+  set concurrency($core.int v) { $_setSignedInt32(0, v); }
   @$pb.TagNumber(1)
-  $core.bool hasTimeout() => $_has(0);
+  $core.bool hasConcurrency() => $_has(0);
   @$pb.TagNumber(1)
-  void clearTimeout() => clearField(1);
+  void clearConcurrency() => clearField(1);
+
+  @$pb.TagNumber(2)
+  $core.int get timeout => $_getIZ(1);
+  @$pb.TagNumber(2)
+  set timeout($core.int v) { $_setSignedInt32(1, v); }
+  @$pb.TagNumber(2)
+  $core.bool hasTimeout() => $_has(1);
+  @$pb.TagNumber(2)
+  void clearTimeout() => clearField(2);
 }
 
 class PartialTime extends $pb.GeneratedMessage {

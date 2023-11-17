@@ -28,7 +28,6 @@ import (
 	"github.com/dariocasas/deputados3/src/internal/usecase/shutdown_usecase"
 	"github.com/dariocasas/deputados3/src/pkg/class_finder"
 	"github.com/dariocasas/deputados3/src/pkg/http_client"
-	"github.com/dariocasas/deputados3/src/pkg/url_open"
 	"google.golang.org/grpc"
 )
 
@@ -98,8 +97,6 @@ func main() {
 		panic(err)
 	}
 	go grpcServer.Serve(lis)
-
-	url_open.OpenUrl("deputados.exe")
 
 	go func() {
 		<-c
