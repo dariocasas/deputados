@@ -239,12 +239,10 @@ func (p PopulateDbUseCase) Execute(input PopulateDbInputDTO) *PopulateDbOutputDT
 		}
 	}
 
-	const concurrency = 5
-
-	runner := runner.NewRunner(concurrency)
+	runner := runner.NewRunner(input.Concurrency)
 	// Stage 1 (source)
 	// generates input data
-	sourceChan := generateSourceChannel(runner.GetDone(), concurrency, deputadoIndexRepositoryOutputDTO.DeputadosIds)
+	sourceChan := generateSourceChannel(runner.GetDone(), input.Concurrency, deputadoIndexRepositoryOutputDTO.DeputadosIds)
 
 	sinkChan := runner.Run(sourceChan, f)
 
