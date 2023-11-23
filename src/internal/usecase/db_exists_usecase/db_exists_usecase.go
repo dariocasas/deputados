@@ -11,7 +11,7 @@ import (
 	"go.mongodb.org/mongo-driver/mongo"
 )
 
-type DbExistsUseCase struct {
+type DbStatusUseCase struct {
 	client  *mongo.Client
 	config  *configs.Config
 	repoids repo_deputado_index.DeputadoIndexRepositoryInterface
@@ -21,18 +21,18 @@ func NewDbStatusUseCase(
 	client *mongo.Client,
 	config *configs.Config,
 	repoids repo_deputado_index.DeputadoIndexRepositoryInterface,
-) *DbExistsUseCase {
+) *DbStatusUseCase {
 
 	log.Println("NewDbExistsUseCase")
 
-	return &DbExistsUseCase{
+	return &DbStatusUseCase{
 		client:  client,
 		config:  config,
 		repoids: repoids,
 	}
 }
 
-func (u DbExistsUseCase) Execute() *DbStatusUseCaseOutputDTO {
+func (u DbStatusUseCase) Execute() *DbStatusUseCaseOutputDTO {
 
 	log.Println("DbExistsUseCase.Execute()")
 

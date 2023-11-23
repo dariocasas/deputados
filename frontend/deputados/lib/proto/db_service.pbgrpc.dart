@@ -37,6 +37,10 @@ class DbServiceClient extends $grpc.Client {
       '/pb.DbService/PopulateDb',
       ($0.PopulateDbRequest value) => value.writeToBuffer(),
       ($core.List<$core.int> value) => $0.DeputadoResponse.fromBuffer(value));
+  static final _$cancelPopulateDb = $grpc.ClientMethod<$0.CancelPopulateDbRequest, $0.CancelPopulateDbResponse>(
+      '/pb.DbService/CancelPopulateDb',
+      ($0.CancelPopulateDbRequest value) => value.writeToBuffer(),
+      ($core.List<$core.int> value) => $0.CancelPopulateDbResponse.fromBuffer(value));
 
   DbServiceClient($grpc.ClientChannel channel,
       {$grpc.CallOptions? options,
@@ -58,6 +62,10 @@ class DbServiceClient extends $grpc.Client {
 
   $grpc.ResponseStream<$0.DeputadoResponse> populateDb($0.PopulateDbRequest request, {$grpc.CallOptions? options}) {
     return $createStreamingCall(_$populateDb, $async.Stream.fromIterable([request]), options: options);
+  }
+
+  $grpc.ResponseFuture<$0.CancelPopulateDbResponse> cancelPopulateDb($0.CancelPopulateDbRequest request, {$grpc.CallOptions? options}) {
+    return $createUnaryCall(_$cancelPopulateDb, request, options: options);
   }
 }
 
@@ -94,6 +102,13 @@ abstract class DbServiceBase extends $grpc.Service {
         true,
         ($core.List<$core.int> value) => $0.PopulateDbRequest.fromBuffer(value),
         ($0.DeputadoResponse value) => value.writeToBuffer()));
+    $addMethod($grpc.ServiceMethod<$0.CancelPopulateDbRequest, $0.CancelPopulateDbResponse>(
+        'CancelPopulateDb',
+        cancelPopulateDb_Pre,
+        false,
+        false,
+        ($core.List<$core.int> value) => $0.CancelPopulateDbRequest.fromBuffer(value),
+        ($0.CancelPopulateDbResponse value) => value.writeToBuffer()));
   }
 
   $async.Future<$0.DropDbResponse> dropDb_Pre($grpc.ServiceCall call, $async.Future<$0.DropDbRequest> request) async {
@@ -112,8 +127,13 @@ abstract class DbServiceBase extends $grpc.Service {
     yield* populateDb(call, await request);
   }
 
+  $async.Future<$0.CancelPopulateDbResponse> cancelPopulateDb_Pre($grpc.ServiceCall call, $async.Future<$0.CancelPopulateDbRequest> request) async {
+    return cancelPopulateDb(call, await request);
+  }
+
   $async.Future<$0.DropDbResponse> dropDb($grpc.ServiceCall call, $0.DropDbRequest request);
   $async.Future<$0.DbStatusResponse> dbStatus($grpc.ServiceCall call, $0.DbStatusRequest request);
   $async.Future<$0.PopulateIndexResponse> populateIndex($grpc.ServiceCall call, $0.PopulateIndexRequest request);
   $async.Stream<$0.DeputadoResponse> populateDb($grpc.ServiceCall call, $0.PopulateDbRequest request);
+  $async.Future<$0.CancelPopulateDbResponse> cancelPopulateDb($grpc.ServiceCall call, $0.CancelPopulateDbRequest request);
 }

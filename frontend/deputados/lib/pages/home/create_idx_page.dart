@@ -5,8 +5,8 @@ import 'package:rx_notifier/rx_notifier.dart';
 import 'package:deputados/core/store/db_status_store.dart';
 
 import '../../core/service/database_service.dart';
-import '../widget/check_close.dart';
 import '../widget/custom_app_bar.dart';
+import '../widget/check_close.dart';
 import 'main_drawer.dart';
 
 class CreateIdxPage extends StatefulWidget {
@@ -29,11 +29,11 @@ class _CreateIdxPageState extends State<CreateIdxPage> {
     final theme = Theme.of(context);
     final loading = context.select(() => dbStatusStore.loading);
 
-    return CheckClose(
-      child: Scaffold(
-        drawer: const MainDrawer(),
-        appBar: const CustomAppBar(title: 'Deputados. Criar índice.'),
-        body: Center(
+    return Scaffold(
+      drawer: const MainDrawer(),
+      appBar: const CustomAppBar(title: 'Deputados. Criar índice.'),
+      body: CheckClose(
+        child: Center(
           child: SizedBox(
             width: 500,
             child: Column(

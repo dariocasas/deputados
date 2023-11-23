@@ -51,8 +51,3 @@ DEPS_GRPC_ADDR="localhost"
 
 - build.bat
 - run.bat
-
-## Todo
-
-- GRPC Health Checking
-- Web Client. Proxy? gRPC-Web?

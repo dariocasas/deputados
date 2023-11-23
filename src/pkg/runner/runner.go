@@ -1,7 +1,5 @@
 package runner
 
-// See https://go.dev/blog/pipelines (Sameer Ajmani)
-
 import (
 	"log"
 	"sync"
@@ -13,11 +11,13 @@ type Runner struct {
 	concurrency int
 }
 
-func NewRunner(concurrency int) RunnerIterface {
-	return &Runner{
-		done:        make(chan struct{}, concurrency),
-		concurrency: concurrency,
-	}
+func NewRunner() RunnerIterface {
+	return &Runner{}
+}
+
+func (r *Runner) SetConcurrency(concurrency int) {
+	r.concurrency = concurrency
+	r.done = make(chan struct{}, concurrency)
 }
 
 func (r Runner) Done() {

@@ -67,6 +67,7 @@ func main() {
 		config, deputadoIndexRepository, deputadoRepository, apiDeputado,
 		scanPageDeputado, httpClient, getDeputadoFromApiUseCase,
 	)
+
 	populateIndexUseCase := populate_index_usecase.NewPopulateIndexUseCase(
 		config, deputadoIndexRepository, apiDeputadosAll,
 	)
@@ -76,8 +77,9 @@ func main() {
 	// GRPC ------------
 
 	var opts []grpc.ServerOption
-
 	grpcServer := grpc.NewServer(opts...)
+	healthService := grpc_service.NewHealthService(config)
+	pb.RegisterHealthServiceServer(grpcServer, healthService)
 
 	dbService := grpc_service.NewDbService(config,
 		*dropDbUsecase, *dbStatusUseCase, *fetchDeputadosIdsUseCase,
@@ -88,7 +90,7 @@ func main() {
 	pb.RegisterFotosServiceServer(grpcServer, fotosService)
 
 	shutdownUsecase := shutdown_usecase.NewShutdownUseCase(grpcServer, db, config)
-	serverService := grpc_service.NewServerService(*shutdownUsecase)
+	serverService := grpc_service.NewServerService(config, *shutdownUsecase)
 	pb.RegisterServerServiceServer(grpcServer, serverService)
 
 	log.Printf("Starting gRPC server on %s:%s", config.GRPCServerAddr, config.GRPCServerPort)

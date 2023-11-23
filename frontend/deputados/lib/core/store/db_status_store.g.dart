@@ -1,7 +1,5 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-// ignore_for_file: library_private_types_in_public_api, no_leading_underscores_for_local_identifiers
-
 part of 'db_status_store.dart';
 
 // **************************************************************************
@@ -22,6 +20,19 @@ mixin _DbStatusStoreMixin on _DbStatusStore {
   set dbStatus(DbStatus _dbStatusValue) => _dbStatusRx.value = _dbStatusValue;
   @override
   DbStatus get dbStatus => _dbStatusRx.value;
+
+  ///
+  /// GENERATED serverStatus(ServerStatus)
+  ///
+
+  late final _serverStatusRx = RxNotifier<ServerStatus>(super.serverStatus);
+  RxValueListenable<ServerStatus> get serverStatusListenable => _serverStatusRx;
+
+  @override
+  set serverStatus(ServerStatus _serverStatusValue) =>
+      _serverStatusRx.value = _serverStatusValue;
+  @override
+  ServerStatus get serverStatus => _serverStatusRx.value;
 
   ///
   /// GENERATED indexCount(int)

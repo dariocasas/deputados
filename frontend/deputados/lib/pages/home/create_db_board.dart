@@ -1,5 +1,4 @@
 // ignore_for_file: lines_longer_than_80_chars
-
 import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:rx_notifier/rx_notifier.dart';
@@ -7,10 +6,11 @@ import 'package:rx_notifier/rx_notifier.dart';
 import 'package:deputados/core/store/create_db_store.dart';
 import 'package:deputados/core/store/db_status_store.dart';
 
-import '../widget/check_close.dart';
 import '../widget/custom_app_bar.dart';
+import '../widget/check_close.dart';
 import 'create_db_finished.dart';
 import 'create_db_item.dart';
+import 'create_db_working.dart';
 
 class CreateDBBoard extends StatefulWidget {
   const CreateDBBoard({super.key});
@@ -46,13 +46,12 @@ class _CreateDBBoardState extends State<CreateDBBoard> {
     if (deputados.isEmpty) {
       return Container();
     } else {
-      return CheckClose(
-        child: Scaffold(
-          // drawer: const MainDrawer(),
-          appBar: CustomAppBar(
-              title:
-                  "Criando db: $dbStatusItems deputados  | tempo: $seconds seg  | média: $sAvg deputados/segundo | concorrência: $concurrency"),
-          body: Column(
+      return Scaffold(
+        appBar: CustomAppBar(
+            title:
+                "Criando db: $dbStatusItems deputados  | tempo: $seconds seg  | média: $sAvg deputados/segundo | concorrência: $concurrency"),
+        body: CheckClose(
+          child: Column(
             children: [
               Expanded(
                 child: ListView.builder(
@@ -65,7 +64,10 @@ class _CreateDBBoardState extends State<CreateDBBoard> {
                   },
                 ),
               ),
-              if (ready == true) const CreateDbFinished()
+              if (ready == true)
+                const CreateDbFinished()
+              else
+                const CreateDbWorking()
             ],
           ),
         ),

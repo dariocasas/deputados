@@ -17,19 +17,13 @@ class _CheckCloseState extends State<CheckClose> {
   final dbStatusStore = Modular.get<DbStatusStore>();
 
   @override
-  void initState() {
-    Future.delayed(
-        const Duration(milliseconds: 10), () => dbStatusStore.askClose = false);
-    super.initState();
-  }
-
-  @override
   Widget build(BuildContext context) {
     final askClose = context.select(() => dbStatusStore.askClose);
-
-    if (askClose == true) {
-      Future.delayed(
-          const Duration(milliseconds: 10), () => closeDialog(context));
+    if (askClose) {
+      Future.delayed(const Duration(milliseconds: 10), () {
+        dbStatusStore.askClose = false;
+        closeDialog(context);
+      });
     }
 
     return widget.child;

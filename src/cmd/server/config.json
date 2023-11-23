@@ -4,5 +4,6 @@
 	"HTTP_CLIENT_TIMEOUT_MILLISECS": 5000,
 	"DEPUTADOS_IDS_COLLECTION": "deputadoIdList",
 	"DEPUTADOS_COLLECTION": "deputados",
-	"DEPUTADO_PAGES_URL": "https://www.camara.leg.br/deputados"
+	"DEPUTADO_PAGES_URL": "https://www.camara.leg.br/deputados",
+	"SERVER_ACCEPT_SHUTDOWN": true
 }

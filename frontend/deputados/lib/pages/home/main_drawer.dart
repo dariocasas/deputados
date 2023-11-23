@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import '../../core/service/database_service.dart';
 import '../../core/service/server_service.dart';
-import '../widget/close_dialog.dart';
+import '../../core/store/db_status_store.dart';
 import 'main_drawer_header.dart';
 import '../widget/confirm_dialog.dart';
 
@@ -16,6 +16,7 @@ class MainDrawer extends StatefulWidget {
 class _MainDrawerState extends State<MainDrawer> {
   final grpcService = Modular.get<DatabaseService>();
   final serverService = Modular.get<ServerService>();
+  final dbStatusStore = Modular.get<DbStatusStore>();
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +46,7 @@ class _MainDrawerState extends State<MainDrawer> {
           Modular.to.navigate('/fotos/');
         }
         if (index == 2) {
-          closeDialog(context);
+          dbStatusStore.askClose = true;
           Modular.to.pop();
         }
       },
