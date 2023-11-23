@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:rx_notifier/rx_notifier.dart';
 
-import '../widget/check_close.dart';
 import '../widget/custom_app_bar.dart';
+import '../widget/check_close.dart';
 import 'create_db_board.dart';
 import '../../core/service/database_service.dart';
 import 'main_drawer.dart';
@@ -28,11 +28,11 @@ class _CreateDbPageState extends State<CreateDbPage> {
     final theme = Theme.of(context);
     final indexCount = context.select(() => dbStatusStore.indexCount);
 
-    return CheckClose(
-      child: Scaffold(
-        drawer: const MainDrawer(),
-        appBar: const CustomAppBar(title: 'Deputados. Criar banco de dados'),
-        body: Center(
+    return Scaffold(
+      drawer: const MainDrawer(),
+      appBar: const CustomAppBar(title: 'Deputados. Criar banco de dados'),
+      body: CheckClose(
+        child: Center(
           child: SizedBox(
             width: 320,
             child: Column(

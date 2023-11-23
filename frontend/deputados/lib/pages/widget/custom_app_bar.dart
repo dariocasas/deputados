@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:rx_notifier/rx_notifier.dart';
 
+import '../../core/store/db_status_store.dart';
+
 class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
   final String title;
   const CustomAppBar({super.key, required this.title});
@@ -16,10 +18,20 @@ class CustomAppBar extends StatefulWidget implements PreferredSizeWidget {
 }
 
 class _CustomAppBarState extends State<CustomAppBar> {
+  final dbStatusStore = Modular.get<DbStatusStore>();
+
   @override
   Widget build(BuildContext context) {
+    final serverStatus = context.select(() => dbStatusStore.serverStatus);
+
     return AppBar(
       title: Text(widget.title),
+      actions: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: serverStatus.icon(),
+        ),
+      ],
       leading: Builder(
         builder: (BuildContext context) {
           return IconButton(

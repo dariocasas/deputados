@@ -49,10 +49,15 @@ message DeputadoResponse {
     PartialTime partialTime = 6;
 }
 
+message CancelPopulateDbRequest {}
+message CancelPopulateDbResponse {}
+
+
 service DbService {
     rpc DropDb(DropDbRequest) returns (DropDbResponse) {}
     rpc DbStatus(DbStatusRequest) returns (DbStatusResponse) {}
     rpc PopulateIndex(PopulateIndexRequest) returns (PopulateIndexResponse) {}
     rpc PopulateDb(PopulateDbRequest) returns (stream DeputadoResponse) {}
+    rpc CancelPopulateDb(CancelPopulateDbRequest) returns (CancelPopulateDbResponse) {}
 }
 

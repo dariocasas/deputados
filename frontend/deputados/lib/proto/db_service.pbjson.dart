@@ -146,3 +146,21 @@ final $typed_data.Uint8List deputadoResponseDescriptor = $convert.base64Decode(
     'IgoMbWlsbGlzZWNvbmRzGAUgASgFUgxtaWxsaXNlY29uZHMSMQoLcGFydGlhbFRpbWUYBiABKA'
     'syDy5wYi5QYXJ0aWFsVGltZVILcGFydGlhbFRpbWU=');
 
+@$core.Deprecated('Use cancelPopulateDbRequestDescriptor instead')
+const CancelPopulateDbRequest$json = {
+  '1': 'CancelPopulateDbRequest',
+};
+
+/// Descriptor for `CancelPopulateDbRequest`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List cancelPopulateDbRequestDescriptor = $convert.base64Decode(
+    'ChdDYW5jZWxQb3B1bGF0ZURiUmVxdWVzdA==');
+
+@$core.Deprecated('Use cancelPopulateDbResponseDescriptor instead')
+const CancelPopulateDbResponse$json = {
+  '1': 'CancelPopulateDbResponse',
+};
+
+/// Descriptor for `CancelPopulateDbResponse`. Decode as a `google.protobuf.DescriptorProto`.
+final $typed_data.Uint8List cancelPopulateDbResponseDescriptor = $convert.base64Decode(
+    'ChhDYW5jZWxQb3B1bGF0ZURiUmVzcG9uc2U=');
+

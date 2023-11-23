@@ -2,6 +2,7 @@
 
 import 'package:rx_notifier/rx_notifier.dart';
 import '../db_status_enum.dart';
+import '../server_status_enum.dart';
 
 part 'db_status_store.g.dart';
 
@@ -9,6 +10,8 @@ part 'db_status_store.g.dart';
 abstract class _DbStatusStore {
   @RxValue()
   DbStatus dbStatus = DbStatus.uninitializated;
+  @RxValue()
+  ServerStatus serverStatus = ServerStatus.unknown;
   @RxValue()
   int indexCount = 0;
   @RxValue()

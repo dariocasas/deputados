@@ -1,6 +1,9 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:grpc/grpc.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:deputados/proto/health_service.pbgrpc.dart';
 
 abstract class GrpcService {
   void init();
@@ -10,6 +13,7 @@ abstract class GrpcService {
 
 class GrpcServiceImpl implements GrpcService {
   late final ClientChannel channel;
+  late final HealthServiceClient healthClient;
 
   GrpcServiceImpl();
 

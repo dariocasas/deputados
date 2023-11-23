@@ -26,40 +26,41 @@ class AppModule extends Module {
 
   @override
   void routes(RouteManager r) {
+    const defTransition = TransitionType.noTransition;
     r.child(
       '/',
       child: (context) => const WaitConnectionPage(),
-      transition: TransitionType.noTransition,
+      transition: defTransition,
     );
     r.child(
       '/waitconn/',
       child: (context) => const WaitConnectionPage(),
-      transition: TransitionType.noTransition,
+      transition: defTransition,
     );
     r.child(
       '/nodb/',
       child: (context) => const CreateIdxPage(),
-      transition: TransitionType.noTransition,
+      transition: defTransition,
     );
     r.child(
       '/idxok/',
       child: (context) => const CreateDbPage(),
-      transition: TransitionType.noTransition,
+      transition: defTransition,
     );
     r.child(
       '/dbok/',
       child: (context) => const FotosPage(),
-      transition: TransitionType.noTransition,
+      transition: defTransition,
     );
     r.child(
       '/error/:error',
       child: (context) => ErrorPage(error: r.args.params['error']),
-      transition: TransitionType.noTransition,
+      transition: defTransition,
     );
     r.child(
       '/fotos/',
       child: (context) => const FotosPage(),
-      transition: TransitionType.noTransition,
+      transition: defTransition,
     );
   }
 }

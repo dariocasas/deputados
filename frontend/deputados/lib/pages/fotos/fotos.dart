@@ -6,8 +6,8 @@ import 'package:rx_notifier/rx_notifier.dart';
 
 import '../../core/store/fotos_store.dart';
 import '../home/main_drawer.dart';
-import '../widget/check_close.dart';
 import '../widget/custom_app_bar.dart';
+import '../widget/check_close.dart';
 
 const kX = 320.0;
 const kY = 200.0;
@@ -34,11 +34,11 @@ class _FotosPageState extends State<FotosPage> {
   Widget build(BuildContext context) {
     final fotos = context.select(() => fotosStore.fotos);
 
-    return CheckClose(
-      child: Scaffold(
-        drawer: const MainDrawer(),
-        appBar: const CustomAppBar(title: "Deputados. Fotos"),
-        body: Column(
+    return Scaffold(
+      drawer: const MainDrawer(),
+      appBar: const CustomAppBar(title: "Deputados. Fotos"),
+      body: CheckClose(
+        child: Column(
           children: [
             Expanded(
                 child: GridView.builder(

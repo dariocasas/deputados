@@ -569,6 +569,70 @@ class DeputadoResponse extends $pb.GeneratedMessage {
   PartialTime ensurePartialTime() => $_ensure(5);
 }
 
+class CancelPopulateDbRequest extends $pb.GeneratedMessage {
+  factory CancelPopulateDbRequest() => create();
+  CancelPopulateDbRequest._() : super();
+  factory CancelPopulateDbRequest.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory CancelPopulateDbRequest.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'CancelPopulateDbRequest', package: const $pb.PackageName(_omitMessageNames ? '' : 'pb'), createEmptyInstance: create)
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  CancelPopulateDbRequest clone() => CancelPopulateDbRequest()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  CancelPopulateDbRequest copyWith(void Function(CancelPopulateDbRequest) updates) => super.copyWith((message) => updates(message as CancelPopulateDbRequest)) as CancelPopulateDbRequest;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static CancelPopulateDbRequest create() => CancelPopulateDbRequest._();
+  CancelPopulateDbRequest createEmptyInstance() => create();
+  static $pb.PbList<CancelPopulateDbRequest> createRepeated() => $pb.PbList<CancelPopulateDbRequest>();
+  @$core.pragma('dart2js:noInline')
+  static CancelPopulateDbRequest getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<CancelPopulateDbRequest>(create);
+  static CancelPopulateDbRequest? _defaultInstance;
+}
+
+class CancelPopulateDbResponse extends $pb.GeneratedMessage {
+  factory CancelPopulateDbResponse() => create();
+  CancelPopulateDbResponse._() : super();
+  factory CancelPopulateDbResponse.fromBuffer($core.List<$core.int> i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromBuffer(i, r);
+  factory CancelPopulateDbResponse.fromJson($core.String i, [$pb.ExtensionRegistry r = $pb.ExtensionRegistry.EMPTY]) => create()..mergeFromJson(i, r);
+
+  static final $pb.BuilderInfo _i = $pb.BuilderInfo(_omitMessageNames ? '' : 'CancelPopulateDbResponse', package: const $pb.PackageName(_omitMessageNames ? '' : 'pb'), createEmptyInstance: create)
+    ..hasRequiredFields = false
+  ;
+
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.deepCopy] instead. '
+  'Will be removed in next major version')
+  CancelPopulateDbResponse clone() => CancelPopulateDbResponse()..mergeFromMessage(this);
+  @$core.Deprecated(
+  'Using this can add significant overhead to your binary. '
+  'Use [GeneratedMessageGenericExtensions.rebuild] instead. '
+  'Will be removed in next major version')
+  CancelPopulateDbResponse copyWith(void Function(CancelPopulateDbResponse) updates) => super.copyWith((message) => updates(message as CancelPopulateDbResponse)) as CancelPopulateDbResponse;
+
+  $pb.BuilderInfo get info_ => _i;
+
+  @$core.pragma('dart2js:noInline')
+  static CancelPopulateDbResponse create() => CancelPopulateDbResponse._();
+  CancelPopulateDbResponse createEmptyInstance() => create();
+  static $pb.PbList<CancelPopulateDbResponse> createRepeated() => $pb.PbList<CancelPopulateDbResponse>();
+  @$core.pragma('dart2js:noInline')
+  static CancelPopulateDbResponse getDefault() => _defaultInstance ??= $pb.GeneratedMessage.$_defaultFor<CancelPopulateDbResponse>(create);
+  static CancelPopulateDbResponse? _defaultInstance;
+}
+
 
 const _omitFieldNames = $core.bool.fromEnvironment('protobuf.omit_field_names');
 const _omitMessageNames = $core.bool.fromEnvironment('protobuf.omit_message_names');

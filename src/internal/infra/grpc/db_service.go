@@ -27,8 +27,8 @@ type DbService struct {
 func NewDbService(
 	config *configs.Config,
 	dropDbUseCase drop_db_usecase.DropDbUseCaseInterface,
-	dbExistsUseCase db_exists_usecase.DbExistsUseCase,
-	fetchDeputadosIdsUseCase fetch_deputados_ids_usecase.FetchDeputadosIdsUseCase,
+	dbExistsUseCase db_exists_usecase.DbStatusUseCaseInterface,
+	fetchDeputadosIdsUseCase fetch_deputados_ids_usecase.FetchDeputadosIdsUseCaseInterface,
 	populateDbUseCase populate_db_usecase.PopulateDbUseCaseInterface,
 	populateIndexUseCase populate_index_usecase.PopulateIndexUseCaseInterface,
 ) *DbService {
@@ -122,6 +122,14 @@ func NewDeputadoResponse(
 	}
 }
 
+func (s *DbService) CancelPopulateDb(context.Context, *pb.CancelPopulateDbRequest) (*pb.CancelPopulateDbResponse, error) {
+	log.Println("DbService.CancelPopulateDb()")
+
+	s.populateDbUseCase.Cancel()
+
+	return nil, nil
+}
+
 func (s *DbService) PopulateDb(in *pb.PopulateDbRequest, out pb.DbService_PopulateDbServer) error {
 
 	log.Println("DbService.PopulateDb()")
@@ -129,7 +137,7 @@ func (s *DbService) PopulateDb(in *pb.PopulateDbRequest, out pb.DbService_Popula
 	populateDbOutputDTO := s.populateDbUseCase.Execute(
 
 		populate_db_usecase.PopulateDbInputDTO{
-			TimeOut: int(in.Timeout),
+			TimeOut:     int(in.Timeout),
 			Concurrency: int(in.Concurrency),
 			OnNewItem: func(
 				id int,
@@ -139,7 +147,11 @@ func (s *DbService) PopulateDb(in *pb.PopulateDbRequest, out pb.DbService_Popula
 				partialTime populate_db_usecase.PartialTime,
 			) {
 				log.Println(partialTime)
-				out.Send(NewDeputadoResponse(id, name, error, elapsedTime, partialTime))
+				err := out.Send(NewDeputadoResponse(id, name, error, elapsedTime, partialTime))
+				if err != nil {
+					log.Printf("PopulateDb OnNewItem Send: %s", err.Error())
+					s.populateDbUseCase.Cancel()
+				}
 			},
 		},
 	)

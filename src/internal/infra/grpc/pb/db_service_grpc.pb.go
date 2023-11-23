@@ -26,6 +26,7 @@ type DbServiceClient interface {
 	DbStatus(ctx context.Context, in *DbStatusRequest, opts ...grpc.CallOption) (*DbStatusResponse, error)
 	PopulateIndex(ctx context.Context, in *PopulateIndexRequest, opts ...grpc.CallOption) (*PopulateIndexResponse, error)
 	PopulateDb(ctx context.Context, in *PopulateDbRequest, opts ...grpc.CallOption) (DbService_PopulateDbClient, error)
+	CancelPopulateDb(ctx context.Context, in *CancelPopulateDbRequest, opts ...grpc.CallOption) (*CancelPopulateDbResponse, error)
 }
 
 type dbServiceClient struct {
@@ -95,6 +96,15 @@ func (x *dbServicePopulateDbClient) Recv() (*DeputadoResponse, error) {
 	return m, nil
 }
 
+func (c *dbServiceClient) CancelPopulateDb(ctx context.Context, in *CancelPopulateDbRequest, opts ...grpc.CallOption) (*CancelPopulateDbResponse, error) {
+	out := new(CancelPopulateDbResponse)
+	err := c.cc.Invoke(ctx, "/pb.DbService/CancelPopulateDb", in, out, opts...)
+	if err != nil {
+		return nil, err
+	}
+	return out, nil
+}
+
 // DbServiceServer is the server API for DbService service.
 // All implementations must embed UnimplementedDbServiceServer
 // for forward compatibility
@@ -103,6 +113,7 @@ type DbServiceServer interface {
 	DbStatus(context.Context, *DbStatusRequest) (*DbStatusResponse, error)
 	PopulateIndex(context.Context, *PopulateIndexRequest) (*PopulateIndexResponse, error)
 	PopulateDb(*PopulateDbRequest, DbService_PopulateDbServer) error
+	CancelPopulateDb(context.Context, *CancelPopulateDbRequest) (*CancelPopulateDbResponse, error)
 	mustEmbedUnimplementedDbServiceServer()
 }
 
@@ -121,6 +132,9 @@ func (UnimplementedDbServiceServer) PopulateIndex(context.Context, *PopulateInde
 }
 func (UnimplementedDbServiceServer) PopulateDb(*PopulateDbRequest, DbService_PopulateDbServer) error {
 	return status.Errorf(codes.Unimplemented, "method PopulateDb not implemented")
+}
+func (UnimplementedDbServiceServer) CancelPopulateDb(context.Context, *CancelPopulateDbRequest) (*CancelPopulateDbResponse, error) {
+	return nil, status.Errorf(codes.Unimplemented, "method CancelPopulateDb not implemented")
 }
 func (UnimplementedDbServiceServer) mustEmbedUnimplementedDbServiceServer() {}
 
@@ -210,6 +224,24 @@ func (x *dbServicePopulateDbServer) Send(m *DeputadoResponse) error {
 	return x.ServerStream.SendMsg(m)
 }
 
+func _DbService_CancelPopulateDb_Handler(srv interface{}, ctx context.Context, dec func(interface{}) error, interceptor grpc.UnaryServerInterceptor) (interface{}, error) {
+	in := new(CancelPopulateDbRequest)
+	if err := dec(in); err != nil {
+		return nil, err
+	}
+	if interceptor == nil {
+		return srv.(DbServiceServer).CancelPopulateDb(ctx, in)
+	}
+	info := &grpc.UnaryServerInfo{
+		Server:     srv,
+		FullMethod: "/pb.DbService/CancelPopulateDb",
+	}
+	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
+		return srv.(DbServiceServer).CancelPopulateDb(ctx, req.(*CancelPopulateDbRequest))
+	}
+	return interceptor(ctx, in, info, handler)
+}
+
 // DbService_ServiceDesc is the grpc.ServiceDesc for DbService service.
 // It's only intended for direct use with grpc.RegisterService,
 // and not to be introspected or modified (even as a copy)
@@ -228,6 +260,10 @@ var DbService_ServiceDesc = grpc.ServiceDesc{
 		{
 			MethodName: "PopulateIndex",
 			Handler:    _DbService_PopulateIndex_Handler,
+		},
+		{
+			MethodName: "CancelPopulateDb",
+			Handler:    _DbService_CancelPopulateDb_Handler,
 		},
 	},
 	Streams: []grpc.StreamDesc{

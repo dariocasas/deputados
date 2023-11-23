@@ -28,6 +28,7 @@ type PopulateDbUseCase struct {
 	scanPageDeputado        scan_page.ScanPageDeputadoInterface
 	httpClient              http_client.HttpClientInterface
 	getDeputaFromApi        get_deputado_from_api_usecase.GetDeputadoFromApisUseCaseInterface
+	runner                  runner.RunnerIterface
 }
 
 func NewPopulateDbUseCase(
@@ -38,7 +39,6 @@ func NewPopulateDbUseCase(
 	scanPageDeputado scan_page.ScanPageDeputadoInterface,
 	httpClient http_client.HttpClientInterface,
 	getDeputaFromApi get_deputado_from_api_usecase.GetDeputadoFromApisUseCaseInterface,
-
 ) *PopulateDbUseCase {
 
 	log.Println("NewPopulateDbUseCase")
@@ -51,6 +51,7 @@ func NewPopulateDbUseCase(
 		scanPageDeputado:        scanPageDeputado,
 		httpClient:              httpClient,
 		getDeputaFromApi:        getDeputaFromApi,
+		runner:                  runner.NewRunner(),
 	}
 }
 
@@ -65,6 +66,8 @@ type resultDeputado = struct {
 func (p PopulateDbUseCase) Execute(input PopulateDbInputDTO) *PopulateDbOutputDTO {
 
 	log.Printf("PopulateDbUseCase.Execute() Concurrency:%d", input.Concurrency)
+
+	p.runner.SetConcurrency(input.Concurrency)
 
 	itemsProcessed := 0
 
@@ -239,12 +242,11 @@ func (p PopulateDbUseCase) Execute(input PopulateDbInputDTO) *PopulateDbOutputDT
 		}
 	}
 
-	runner := runner.NewRunner(input.Concurrency)
 	// Stage 1 (source)
 	// generates input data
-	sourceChan := generateSourceChannel(runner.GetDone(), input.Concurrency, deputadoIndexRepositoryOutputDTO.DeputadosIds)
+	sourceChan := generateSourceChannel(p.runner.GetDone(), input.Concurrency, deputadoIndexRepositoryOutputDTO.DeputadosIds)
 
-	sinkChan := runner.Run(sourceChan, f)
+	sinkChan := p.runner.Run(sourceChan, f)
 
 	// Stage 5 (sink)
 	for n := range sinkChan {
@@ -258,6 +260,11 @@ func (p PopulateDbUseCase) Execute(input PopulateDbInputDTO) *PopulateDbOutputDT
 		Error:          nil,
 		ItemsProcessed: itemsProcessed,
 	}
+}
+
+func (p PopulateDbUseCase) Cancel() {
+	p.runner.Done()
+
 }
 
 func generateSourceChannel(done chan struct{}, concurrency int, nums deputado_index.DeputadoIndex) <-chan runner.InputChanType {

@@ -15,4 +15,5 @@ type RunnerIterface interface {
 	Run(<-chan InputChanType, FunctionType) <-chan OuputChanType
 	Done()
 	GetDone() DoneChan
+	SetConcurrency(concurrency int)
 }

@@ -1,11 +1,16 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:flutter_modular/flutter_modular.dart';
 import 'package:grpc/grpc.dart';
 
+import 'package:deputados/core/server_status_enum.dart';
 import 'package:deputados/core/db_status_enum.dart';
 import 'package:deputados/core/store/create_db_store.dart' as createdbstore;
 import 'package:deputados/core/store/db_status_store.dart' as dbstatusstore;
 import 'package:deputados/proto/db_service.pbgrpc.dart';
+import 'package:deputados/proto/health_service.pbgrpc.dart';
 
 import 'grpc_service.dart';
 
@@ -15,11 +20,13 @@ abstract class DatabaseService {
   Future<DbStatus> dbStatus();
   Future<bool> createIdx({int maxItems = 0});
   Future<bool> createDB({int concurrency = 5, int timeout = 15000});
+  Future<bool> cancelCreateDB();
   Future<bool> dropDB();
 }
 
 class DatabaseServiceImpl implements DatabaseService {
   late final ClientChannel channel;
+  late final HealthServiceClient healthClient;
   final GrpcService grpcService;
 
   final dbstatusstore.DbStatusStore dbStatusStore;
@@ -31,6 +38,29 @@ class DatabaseServiceImpl implements DatabaseService {
   void init() {
     debugPrint('DatabaseService.init()');
     channel = grpcService.getClientChannel();
+
+    healthClient = HealthServiceClient(channel);
+
+    final sGrpcHealthCheckSecs = dotenv.env["DEPS_GRPC_HEALTH_CHECK_SECS"];
+    int? grpcHealthCheckSecs = int.tryParse(sGrpcHealthCheckSecs ?? "3");
+    if (grpcHealthCheckSecs != null) {
+      Timer.periodic(Duration(seconds: grpcHealthCheckSecs), (timer) async {
+        final request = HealthCheckRequest();
+        try {
+          final response = await healthClient
+              .check(request)
+              .timeout(const Duration(seconds: 1));
+
+          dbStatusStore.serverStatus =
+              ServerStatus.fromInt(response.status.value);
+
+          debugPrint('grpc server ${response.status.name}');
+        } on TimeoutException catch (e) {
+          debugPrint('grpc server TimeoutException $e');
+          dbStatusStore.serverStatus = ServerStatus.unknown;
+        }
+      });
+    }
   }
 
   @override
@@ -49,20 +79,6 @@ class DatabaseServiceImpl implements DatabaseService {
       debugPrint(dbStatusStore.dbStatus.route());
       Modular.to.navigate(dbStatusStore.dbStatus.route());
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
       return DbStatus.fromInt(response.status.value);
     } on GrpcError catch (e) {
       Modular.to.navigate('/error/${e.message}');
@@ -72,6 +88,17 @@ class DatabaseServiceImpl implements DatabaseService {
 
       return Future.value(DbStatus.uninitializated);
     }
+  }
+
+  @override
+  Future<bool> cancelCreateDB() async {
+    final dbServiceClient = DbServiceClient(channel);
+    await dbServiceClient.cancelPopulateDb(CancelPopulateDbRequest());
+    dbStatusStore.dbStatus = DbStatus.indexCreated;
+    dbStatusStore.loading = false;
+    debugPrint(dbStatusStore.dbStatus.route());
+    Modular.to.navigate(dbStatusStore.dbStatus.route());
+    return Future.value(true);
   }
 
   @override

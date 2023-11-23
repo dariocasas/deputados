@@ -8,6 +8,7 @@ import (
 
 type PopulateDbUseCaseInterface interface {
 	Execute(input PopulateDbInputDTO) *PopulateDbOutputDTO
+	Cancel()
 }
 
 type PopulateDbInputDTO = struct {

@@ -17,6 +17,7 @@ if exist "..\src\cmd\server\.env" (
 
 cd ..\frontend\deputados
 
+call dart run build_runner build --delete-conflicting-outputs
 call flutter build windows --release 
 
 copy "build\windows\runner\Release\deputados.exe" "..\..\build" 

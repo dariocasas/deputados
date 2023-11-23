@@ -56,10 +56,9 @@ class _AppWidgetState extends State<AppWidget> with WindowListener {
 
   @override
   Widget build(BuildContext context) {
-    // Modular.setInitialRoute('/waitconn/');
-
     return MaterialApp.router(
       title: 'Deputados',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.blue),
       routerConfig: Modular.routerConfig,
     ); //added by extension

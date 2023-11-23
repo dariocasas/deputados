@@ -20,6 +20,8 @@ type Config struct {
 	DeputadosIdsCollection     string `mapstructure:"DEPUTADOS_IDS_COLLECTION"`
 	DeputadosCollection        string `mapstructure:"DEPUTADOS_COLLECTION"`
 	DeputadosPagesUrlBase      string `mapstructure:"DEPUTADO_PAGES_URL"`
+
+	ServerAcceptShutdown bool `mapstructure:"SERVER_ACCEPT_SHUTDOWN"`
 }
 
 func NewConfig(base_directory string) (*Config, error) {
@@ -55,6 +57,7 @@ func loadConfig(path string) (*Config, error) {
 	}
 
 	viper.SetConfigType("json")
+
 	viper.SetConfigFile(filepath.Join(path, "config.json"))
 	err = viper.ReadInConfig()
 	if err != nil {

@@ -6,8 +6,8 @@ import 'package:flutter_modular/flutter_modular.dart';
 import 'package:deputados/core/store/db_status_store.dart';
 
 import '../../core/service/database_service.dart';
-import '../widget/check_close.dart';
 import '../widget/custom_app_bar.dart';
+import '../widget/check_close.dart';
 import 'main_drawer.dart';
 
 class WaitConnectionPage extends StatefulWidget {
@@ -29,11 +29,11 @@ class _WaitConnectionPageState extends State<WaitConnectionPage> {
 
   @override
   Widget build(BuildContext context) {
-    return const CheckClose(
-      child: Scaffold(
-        drawer: MainDrawer(),
-        appBar: CustomAppBar(title: 'Conectando...'),
-        body: Center(
+    return const Scaffold(
+      drawer: MainDrawer(),
+      appBar: CustomAppBar(title: 'Conectando...'),
+      body: CheckClose(
+        child: Center(
           child: CircularProgressIndicator(),
         ),
       ),
